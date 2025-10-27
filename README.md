@@ -1,4 +1,115 @@
-# 🧠 Resume and Job Description Keyword Extractor using NLP
+# Resume and Job Description Keyword Extractor using NLP
+
+# Project Code
+# ==========================================
+# Resume and Job Description Keyword Extractor
+# ==========================================
+
+# 📦 Step 1: Import Libraries
+import spacy
+import re
+import os
+from nltk.corpus import stopwords
+import nltk
+
+# Download required NLTK data
+nltk.download('stopwords')
+
+# Load spaCy English model
+nlp = spacy.load('en_core_web_sm')
+
+# ==========================================
+# 📂 Step 2: Define File Paths
+# ==========================================
+DATA_PATH = "data"
+resume_file = os.path.join(DATA_PATH, "sample_resume.txt")
+jd_file = os.path.join(DATA_PATH, "job_description.txt")
+
+# ==========================================
+# 🧹 Step 3: Text Preprocessing Function
+# ==========================================
+def clean_text(text):
+    text = re.sub(r'[^a-zA-Z\s]', '', text)  # remove punctuation/numbers
+    text = text.lower()
+    tokens = [word for word in text.split() if word not in stopwords.words('english')]
+    return ' '.join(tokens)
+
+# ==========================================
+# 🧠 Step 4: NLP Processing and Extraction
+# ==========================================
+def extract_entities(text):
+    doc = nlp(text)
+    entities = {"PERSON": [], "ORG": [], "EDUCATION": [], "SKILLS": [], "EXPERIENCE": []}
+    
+    # 4.1 Named Entity Recognition (NER)
+    for ent in doc.ents:
+        if ent.label_ in ["PERSON", "ORG", "GPE"]:
+            entities[ent.label_].append(ent.text)
+    
+    # 4.2 Education keywords
+    education_keywords = ['btech', 'mtech', 'bachelor', 'master', 'phd', 'computer science', 'engineering', 'degree']
+    for word in education_keywords:
+        if word in text.lower():
+            entities["EDUCATION"].append(word.title())
+
+    # 4.3 Skill extraction (custom list)
+    skills = [
+        'python', 'java', 'sql', 'c++', 'machine learning', 'deep learning', 
+        'data analysis', 'excel', 'communication', 'leadership', 'html', 'css',
+        'javascript', 'tensorflow', 'pandas', 'numpy', 'data visualization'
+    ]
+    for skill in skills:
+        if skill in text.lower():
+            entities["SKILLS"].append(skill.title())
+
+    # 4.4 Experience detection
+    exp_keywords = ['experience', 'worked', 'intern', 'project', 'year']
+    for word in exp_keywords:
+        if word in text.lower():
+            entities["EXPERIENCE"].append(word.title())
+
+    # Remove duplicates
+    for key in entities:
+        entities[key] = list(set(entities[key]))
+    
+    return entities
+
+# ==========================================
+# 📄 Step 5: Load and Process Files
+# ==========================================
+def read_file(file_path):
+    with open(file_path, 'r', encoding='utf-8') as f:
+        return f.read()
+
+resume_text = read_file(resume_file)
+jd_text = read_file(jd_file)
+
+clean_resume = clean_text(resume_text)
+clean_jd = clean_text(jd_text)
+
+# Extract information
+resume_entities = extract_entities(clean_resume)
+jd_entities = extract_entities(clean_jd)
+
+# ==========================================
+# 📊 Step 6: Display Results
+# ==========================================
+def display_output(title, entities):
+    print("\n" + "="*50)
+    print(title)
+    print("="*50)
+    for key, values in entities.items():
+        print(f"{key}: {values}")
+
+display_output("📄 Resume Keywords Extracted", resume_entities)
+display_output("💼 Job Description Keywords Extracted", jd_entities)
+
+# ==========================================
+# 🔍 Step 7 (Optional): Match Skills Between Resume and Job Description
+# ==========================================
+common_skills = set(resume_entities["SKILLS"]) & set(jd_entities["SKILLS"])
+print("\n✅ Common Skills Between Resume and Job Description:")
+print(list(common_skills) if common_skills else "No common skills found.")
 
 ## 📌 Project Overview
 This mini-project demonstrates how **Natural Language Processing (NLP)** can be applied to extract and compare key information from textual data — specifically **resumes** and **job descriptions**.
