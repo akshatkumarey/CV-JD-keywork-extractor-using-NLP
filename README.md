@@ -1,9 +1,9 @@
 # Resume and Job Description Keyword Extractor using NLP
 
 # Project Code
-# ==========================================
+# =====================================
 # Resume and Job Description Keyword Extractor
-# ==========================================
+# =====================================
 
 ## Step 1: Import Libraries
 import spacy
@@ -18,25 +18,25 @@ nltk.download('stopwords')
 ## Load spaCy English model
 nlp = spacy.load('en_core_web_sm')
 
-# ==========================================
+# =====================================
 # Step 2: Define File Paths
-# ==========================================
+# =====================================
 DATA_PATH = "data"
 resume_file = os.path.join(DATA_PATH, "sample_resume.txt")
 jd_file = os.path.join(DATA_PATH, "job_description.txt")
 
-# ==========================================
+# =====================================
 # Step 3: Text Preprocessing Function
-# ==========================================
+# =====================================
 def clean_text(text):
     text = re.sub(r'[^a-zA-Z\s]', '', text)  # remove punctuation/numbers
     text = text.lower()
     tokens = [word for word in text.split() if word not in stopwords.words('english')]
     return ' '.join(tokens)
 
-# ==========================================
+# =====================================
 # Step 4: NLP Processing and Extraction
-# ==========================================
+# =====================================
 def extract_entities(text):
     doc = nlp(text)
     entities = {"PERSON": [], "ORG": [], "EDUCATION": [], "SKILLS": [], "EXPERIENCE": []}
@@ -74,9 +74,9 @@ def extract_entities(text):
     
     return entities
 
-# ==========================================
+# =====================================
 # Step 5: Load and Process Files
-# ==========================================
+# =====================================
 def read_file(file_path):
     with open(file_path, 'r', encoding='utf-8') as f:
         return f.read()
@@ -91,9 +91,9 @@ clean_jd = clean_text(jd_text)
 resume_entities = extract_entities(clean_resume)
 jd_entities = extract_entities(clean_jd)
 
-# ==========================================
+# =====================================
 # Step 6: Display Results
-# ==========================================
+# =====================================
 def display_output(title, entities):
     print("\n" + "="*50)
     print(title)
@@ -104,9 +104,9 @@ def display_output(title, entities):
 display_output("Resume Keywords Extracted", resume_entities)
 display_output("Job Description Keywords Extracted", jd_entities)
 
-# ==========================================
+# =====================================
 # Step 7 (Optional): Match Skills Between Resume and Job Description
-# ==========================================
+# =====================================
 common_skills = set(resume_entities["SKILLS"]) & set(jd_entities["SKILLS"])
 print("\nCommon Skills Between Resume and Job Description:")
 print(list(common_skills) if common_skills else "No common skills found.")
