@@ -1,5 +1,5 @@
 
-# AI Resume Matcher (ATS Analyzer)
+# 📊AI Resume Matcher using NLP
 
 ## 🧠 Overview
 The **AI Resume Matcher (ATS Analyzer)** is an intelligent web app that analyzes a resume against a given job description (JD) and generates a detailed **ATS (Applicant Tracking System) report**. The system uses **Natural Language Processing (NLP)** to calculate an ATS score, match percentage, and perform **skill gap analysis**, **resume–JD fit visualization**, and **improvement suggestions**.
